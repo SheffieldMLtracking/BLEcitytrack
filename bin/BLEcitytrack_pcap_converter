@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import glob
+import ijson
+import pandas as pd
+import BLEcitytrack
+
+parser = argparse.ArgumentParser(description='Converts PCAP to json, then picks out relevant info and stores in a pandas dataframe (in a parquet file).')
+parser.add_argument('source',type=str,help='Filename of the PCAP file, or the folder. If a whole folder is used, it merges that whole folder\'s set of pcaps into a single parquet file.')
+
+
+args = parser.parse_args()
+
+source = args.source
+
+
+if os.path.isdir(source):
+    fn_parquet = source+'/devices.parquet'
+    pcap_list = glob.glob(source+'/*pcap')
+else:
+    fn_parquet = fn_json = source[:-5]+'.parquet'
+    pcap_list = [source]
+
+for fn_pcap in pcap_list:
+    BLEcitytrack.convert_pcap(fn_pcap)
+
+print("Extracting devices from JSON file(s)")
+df = BLEcitytrack.parse_json(pcap_list)
+print("Saving to %s" % fn_parquet)
+df.to_parquet(fn_parquet)

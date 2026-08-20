@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "BLEcitytrack"
+version = "0.0.1"
+description = "Uses BeeLE to track bees in the city."
+readme = "README.md"
+authors = [
+    {name = "Mike Smith", email = "m.t.smith@sheffield.ac.uk"}
+]
+keywords = ["bee","fingerprinting","city","tracking","BLE"]
+classifiers = []
+dependencies = [
+    "numpy",
+]
+
+[project.urls]
+Homepage = "https://github.com/SheffieldMLtracking/BLEcitytrack.git"
+Download = "https://github.com/SheffieldMLtracking/BLEcitytrack.git"
+
+[tool.setuptools]
+packages = ["BLEcitytrack"]
+script-files = ["bin/BLEcitytrack_pcap_converter"]
