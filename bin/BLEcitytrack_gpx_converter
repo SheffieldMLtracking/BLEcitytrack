@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import glob
+import ijson
+import pandas as pd
+import BLEcitytrack
+
+parser = argparse.ArgumentParser(description='Converts GPX to a pandas dataframe (in a parquet file), converting lat/lon to BNG coordinates (easting/northing).')
+parser.add_argument('source',type=str,help='Filename of GPX file, or the folder. If a whole folder is used, it merges that whole folder\'s set of GPXs into a single parquet file.')
+
+args = parser.parse_args()
+
+source = args.source
+
+if os.path.isdir(source):
+    fn_parquet = source+'/locations.parquet'
+    gpx_list = glob.glob(source+'/*gpx')
+else:
+    fn_parquet = fn_json = source[:-4]+'.parquet'
+    gpx_list = [source]
+
+print("Extracting locations from GPX file(s)")
+
+gpx_df = pd.DataFrame()
+for fn_gpx in gpx_list:
+    gpx_df = pd.concat([gpx_df,BLEcitytrack.convert_gpx(fn_gpx)])
+
+print("Saving to %s" % fn_parquet)
+gpx_df.to_parquet(fn_parquet)

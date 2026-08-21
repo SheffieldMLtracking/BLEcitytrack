@@ -10,7 +10,6 @@ import BLEcitytrack
 parser = argparse.ArgumentParser(description='Converts PCAP to json, then picks out relevant info and stores in a pandas dataframe (in a parquet file).')
 parser.add_argument('source',type=str,help='Filename of the PCAP file, or the folder. If a whole folder is used, it merges that whole folder\'s set of pcaps into a single parquet file.')
 
-
 args = parser.parse_args()
 
 source = args.source
@@ -26,6 +25,6 @@ for fn_pcap in pcap_list:
     BLEcitytrack.convert_pcap(fn_pcap)
 
 print("Extracting devices from JSON file(s)")
-df = BLEcitytrack.parse_json(pcap_list)
+pcap_df = BLEcitytrack.parse_json(pcap_list)
 print("Saving to %s" % fn_parquet)
-df.to_parquet(fn_parquet)
+pcap_df.to_parquet(fn_parquet)

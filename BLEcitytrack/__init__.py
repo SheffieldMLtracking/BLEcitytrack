@@ -2,6 +2,8 @@ import os
 import ijson
 import pandas as pd
 from datetime import datetime
+import gpxpy
+from pyproj import Transformer
 
 def convert_pcap(fn_pcap):
     print("Converting PCAP file: %s" % fn_pcap)
@@ -36,7 +38,6 @@ def parse_time(timestring):
         except:
             return None
 
-
 def parse_json(pcap_list):
     table = []
     for fn_pcap in pcap_list:
@@ -66,3 +67,28 @@ def parse_json(pcap_list):
                 crcok = value
                 
     return pd.DataFrame(table)
+
+def convert_gpx(fn_gpx):
+    """convert a gpx file into a pandas dataframe with BNG coordinates"""
+    gpx_data = []
+    with open(fn_gpx, 'r') as f:
+        gpx = gpxpy.parse(f)
+        for track in gpx.tracks:
+            for segment in track.segments:
+                for point in segment.points:
+                    time = point.time
+                    try:
+                        time = time.replace(tzinfo=None)
+                    except:
+                        pass
+
+                    transformer = Transformer.from_crs("EPSG:4326", "EPSG:27700", always_xy=True)
+                    easting, northing = transformer.transform(point.longitude, point.latitude)
+
+                    gpx_data.append({
+                        'easting': easting,
+                        'northing': northing,
+                        'time': time
+                    })
+
+    return pd.DataFrame(gpx_data)
