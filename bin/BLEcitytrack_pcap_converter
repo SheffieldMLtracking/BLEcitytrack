@@ -15,7 +15,6 @@ args = parser.parse_args()
 
 source = args.source
 
-
 if os.path.isdir(source):
     fn_parquet = source+'/devices.parquet'
     pcap_list = glob.glob(source+'/*pcap')

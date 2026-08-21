@@ -8,12 +8,17 @@ version = "0.0.1"
 description = "Uses BeeLE to track bees in the city."
 readme = "README.md"
 authors = [
-    {name = "Mike Smith", email = "m.t.smith@sheffield.ac.uk"}
+    {name = "Mike Smith", email = "m.t.smith@sheffield.ac.uk"},
+    {name = "Michael Byrne", email = "mjbyrne1@sheffield.ac.uk"}
 ]
 keywords = ["bee","fingerprinting","city","tracking","BLE"]
 classifiers = []
 dependencies = [
     "numpy",
+    "argparse",
+    "ijson",
+    "pandas",
+    "pyarrow",
 ]
 
 [project.urls]

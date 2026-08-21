@@ -1,6 +1,7 @@
 import os
 import ijson
 import pandas as pd
+from datetime import datetime
 
 def convert_pcap(fn_pcap):
     print("Converting PCAP file: %s" % fn_pcap)
@@ -18,7 +19,23 @@ def convert_pcap(fn_pcap):
     os.system(command)
 
 def parse_time(timestring):
-    return timestring
+    """parses a timestring into datetime object, accomodating different timestring formats"""
+    try:
+        time_without_tz = " ".join(timestring.split()[:-1])
+
+        if "." in time_without_tz:
+            main_part, frac_part = time_without_tz.split(".")
+            # Truncate fractional part to 6 digits (microseconds)
+            frac_part = frac_part[:6]
+            time_without_tz = f"{main_part}.{frac_part}"
+
+        return datetime.strptime(time_without_tz, "%b %d, %Y %H:%M:%S.%f")
+    except:
+        try:
+            return datetime.fromisoformat(timestring.replace("Z", "+00:00"))
+        except:
+            return None
+
 
 def parse_json(pcap_list):
     table = []
